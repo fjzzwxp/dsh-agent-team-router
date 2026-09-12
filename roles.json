@@ -1,0 +1,393 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "Agent Team Router 内置角色库。覆盖营销/电商/研究/设计/产品/工程/写作/分析/战略/教育等域。每个角色含 phases(擅长阶段)、keywords(中英文匹配词)、duty(分工)、acceptance(验收要点)。阶段取值：discovery=调研、analysis=分析、creation=产出、assurance=审查。",
+    "phases": ["discovery", "analysis", "creation", "assurance"]
+  },
+  "roles": [
+    {
+      "name": "TikTok Strategist",
+      "domain": "marketing",
+      "phases": ["discovery", "analysis", "creation"],
+      "keywords": ["tiktok", "抖音", "短视频", "病毒式", "社媒", "内容创作", "算法", "涨粉", "直播", "达人", "带货", "流量"],
+      "duty": "TikTok 营销专家，病毒式内容创作、算法优化与社区建设",
+      "acceptance": "产出可溯源的 TikTok 平台策略事实与内容方向"
+    },
+    {
+      "name": "Paid Social Strategist",
+      "domain": "marketing",
+      "phases": ["analysis", "creation"],
+      "keywords": ["付费广告", "投放", "meta", "facebook", "instagram", "linkedin", "roi", "信息流", "广告", "竞价"],
+      "duty": "跨平台付费社交广告专家，投放策略与 ROI 优化",
+      "acceptance": "产出可执行的投放计划与预算分配"
+    },
+    {
+      "name": "SEO Specialist",
+      "domain": "marketing",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["seo", "搜索", "关键词", "流量", "排名", "谷歌", "google", "优化"],
+      "duty": "搜索引擎优化，关键词研究与自然流量增长",
+      "acceptance": "产出关键词矩阵与 SEO 行动清单"
+    },
+    {
+      "name": "Content Marketer",
+      "domain": "marketing",
+      "phases": ["creation"],
+      "keywords": ["内容营销", "博客", "白皮书", "案例", "选题", "公众号", "种草"],
+      "duty": "内容营销策划与选题，沉淀品牌资产",
+      "acceptance": "产出内容日历与选题库"
+    },
+    {
+      "name": "Brand Strategist",
+      "domain": "marketing",
+      "phases": ["analysis", "creation"],
+      "keywords": ["品牌", "定位", "调性", "故事", "价值主张", "人设", "ip"],
+      "duty": "品牌定位与叙事，建立差异化心智",
+      "acceptance": "产出品牌定位与核心信息屋"
+    },
+    {
+      "name": "Social Media Manager",
+      "domain": "marketing",
+      "phases": ["discovery", "creation"],
+      "keywords": ["社媒运营", "社群", "粉丝", "互动", "账号", "矩阵", "私域"],
+      "duty": "社媒账号与社群日常运营",
+      "acceptance": "产出账号运营 SOP 与互动策略"
+    },
+    {
+      "name": "Cross-Border E-Commerce Specialist",
+      "domain": "ecommerce",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["跨境", "出海", "amazon", "shopee", "lazada", "aliexpress", "独立站", "选品", "跨境电商", "全球"],
+      "duty": "全漏斗跨境电商策略专家，覆盖 Amazon/Shopee/Lazada/独立站",
+      "acceptance": "产出跨境选品与渠道进入策略"
+    },
+    {
+      "name": "TikTok Shop Operations",
+      "domain": "ecommerce",
+      "phases": ["discovery", "analysis", "creation"],
+      "keywords": ["tiktok shop", "小店", "带货", "直播带货", "精选联盟", "短视频带货", "店铺", "商家"],
+      "duty": "TikTok Shop 小店运营，短视频/直播带货与达人合作",
+      "acceptance": "产出店铺运营与达人合作方案"
+    },
+    {
+      "name": "E-commerce Operations Manager",
+      "domain": "ecommerce",
+      "phases": ["analysis", "creation"],
+      "keywords": ["电商运营", "店铺", "转化", "客单价", "gmv", "活动", "促销", "复购"],
+      "duty": "电商运营操盘，活动策划与转化提升",
+      "acceptance": "产出运营节奏与转化提升方案"
+    },
+    {
+      "name": "Amazon Specialist",
+      "domain": "ecommerce",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["amazon", "fba", "欧美", "review", "listing", "亚马逊", "北美"],
+      "duty": "Amazon 平台运营，Listing 与评论管理",
+      "acceptance": "产出 Amazon 运营诊断与优化项"
+    },
+    {
+      "name": "Shopee Lazada Specialist",
+      "domain": "ecommerce",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["shopee", "lazada", "东南亚", "本土店", "泰国", "印尼", "马来", "菲律宾"],
+      "duty": "东南亚本土店运营，类目与本地化",
+      "acceptance": "产出东南亚站点进入策略"
+    },
+    {
+      "name": "Supply Chain Specialist",
+      "domain": "ecommerce",
+      "phases": ["analysis"],
+      "keywords": ["供应链", "选品", "货源", "物流", "履约", "库存", "采购", "工厂"],
+      "duty": "供应链与货源筛选，履约成本测算",
+      "acceptance": "产出货源方案与履约成本模型"
+    },
+    {
+      "name": "Pricing Specialist",
+      "domain": "ecommerce",
+      "phases": ["analysis", "creation"],
+      "keywords": ["定价", "价格", "毛利", "促销", "策略", "折扣", "利润"],
+      "duty": "定价策略与毛利模型设计",
+      "acceptance": "产出定价矩阵与促销策略"
+    },
+    {
+      "name": "Market Research Analyst",
+      "domain": "research",
+      "phases": ["discovery"],
+      "keywords": ["市场调研", "问卷", "访谈", "规模", "趋势", "行业", "盘点", "梳理"],
+      "duty": "市场规模与趋势调研，一手事实收集",
+      "acceptance": "产出可溯源的市场事实清单"
+    },
+    {
+      "name": "Competitive Intelligence",
+      "domain": "research",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["竞品", "对手", "对标", "swot", "差异", "格局", "竞争"],
+      "duty": "竞品与竞争格局分析，差异化机会识别",
+      "acceptance": "产出竞品矩阵与差异化判断"
+    },
+    {
+      "name": "User Research",
+      "domain": "research",
+      "phases": ["discovery"],
+      "keywords": ["用户研究", "画像", "痛点", "需求", "可用性", "访谈", "调研"],
+      "duty": "用户画像与需求洞察",
+      "acceptance": "产出用户画像与需求清单"
+    },
+    {
+      "name": "Data Analyst",
+      "domain": "research",
+      "phases": ["analysis"],
+      "keywords": ["数据", "分析", "报表", "可视化", "sql", "统计", "指标", "dashboard"],
+      "duty": "数据清洗、分析与可视化",
+      "acceptance": "产出数据结论与看板建议"
+    },
+    {
+      "name": "UX Designer",
+      "domain": "design",
+      "phases": ["analysis", "creation"],
+      "keywords": ["体验", "交互", "原型", "可用性", "流程", "ux", "用户旅程"],
+      "duty": "用户体验与交互流程设计",
+      "acceptance": "产出交互流程与原型说明"
+    },
+    {
+      "name": "Product Designer",
+      "domain": "design",
+      "phases": ["creation"],
+      "keywords": ["产品设计", "ui", "界面", "组件", "视觉", "app", "网页"],
+      "duty": "产品界面与视觉设计",
+      "acceptance": "产出界面设计方案"
+    },
+    {
+      "name": "Visual Graphic Designer",
+      "domain": "design",
+      "phases": ["creation"],
+      "keywords": ["视觉", "平面", "海报", "品牌视觉", "配色", "banner", "主图", "封面"],
+      "duty": "平面与品牌视觉设计",
+      "acceptance": "产出视觉设计规范与物料"
+    },
+    {
+      "name": "Courseware Visual Designer",
+      "domain": "design",
+      "phases": ["creation"],
+      "keywords": ["课件", "ppt", "幻灯片", "排版", "教育视觉", "板书", "讲义", "教学模板"],
+      "duty": "课件与教学幻灯片视觉设计，排版与版式美化",
+      "acceptance": "产出课件视觉规范与版式模板"
+    },
+    {
+      "name": "Motion Designer",
+      "domain": "design",
+      "phases": ["creation"],
+      "keywords": ["动效", "视频", "动画", "剪辑", "短片", "特效"],
+      "duty": "视频与动效内容制作",
+      "acceptance": "产出分镜与成片方案"
+    },
+    {
+      "name": "Product Manager",
+      "domain": "product",
+      "phases": ["analysis", "creation"],
+      "keywords": ["产品", "需求", "原型", "prd", "路线图", "优先级", "功能", "设计"],
+      "duty": "产品需求与路线图规划",
+      "acceptance": "产出 PRD 与优先级清单"
+    },
+    {
+      "name": "AI Product Manager",
+      "domain": "product",
+      "phases": ["analysis", "creation"],
+      "keywords": ["ai产品", "智能体", "大模型", "agent", "落地", "prompt", "工作流", "ai"],
+      "duty": "AI 产品与智能体工作流规划落地",
+      "acceptance": "产出 AI 产品方案与智能体设计"
+    },
+    {
+      "name": "Technical Product Manager",
+      "domain": "product",
+      "phases": ["analysis", "creation"],
+      "keywords": ["技术产品", "api", "平台", "架构", "系统", "集成", "saas"],
+      "duty": "技术平台与 API 产品设计",
+      "acceptance": "产出技术方案与集成设计"
+    },
+    {
+      "name": "Frontend Engineer",
+      "domain": "engineering",
+      "phases": ["creation"],
+      "keywords": ["前端", "react", "vue", "网页", "界面", "组件", "typescript", "js"],
+      "duty": "前端与界面实现",
+      "acceptance": "产出前端实现方案"
+    },
+    {
+      "name": "Backend Engineer",
+      "domain": "engineering",
+      "phases": ["creation"],
+      "keywords": ["后端", "api", "服务", "数据库", "架构", "server", "微服务"],
+      "duty": "后端服务与数据层实现",
+      "acceptance": "产出后端架构与接口设计"
+    },
+    {
+      "name": "Full-stack Engineer",
+      "domain": "engineering",
+      "phases": ["creation"],
+      "keywords": ["全栈", "web", "应用", "系统", "全端", "fullstack", "开发"],
+      "duty": "全栈应用开发",
+      "acceptance": "产出全栈实现方案"
+    },
+    {
+      "name": "Data Engineer",
+      "domain": "engineering",
+      "phases": ["analysis", "creation"],
+      "keywords": ["数据工程", "etl", "管道", "数仓", "pipeline", "采集", "爬虫"],
+      "duty": "数据采集与管道工程",
+      "acceptance": "产出数据管道设计"
+    },
+    {
+      "name": "Technical Writer",
+      "domain": "writing",
+      "phases": ["creation"],
+      "keywords": ["技术文档", "说明书", "sdk", "api文档", "手册", "文档"],
+      "duty": "技术文档与 API 文档编写",
+      "acceptance": "产出结构化技术文档"
+    },
+    {
+      "name": "Copywriter",
+      "domain": "writing",
+      "phases": ["creation"],
+      "keywords": ["文案", "广告语", "卖点", "转化", "标题", "话术", "促销文案"],
+      "duty": "营销文案与转化话术撰写",
+      "acceptance": "产出高转化文案"
+    },
+    {
+      "name": "Curriculum Writer",
+      "domain": "writing",
+      "phases": ["creation"],
+      "keywords": ["教材", "大纲", "课程稿", "讲义", "教案", "课件稿", "脚本"],
+      "duty": "教材、讲义与课程脚本撰写",
+      "acceptance": "产出课程文稿与讲义"
+    },
+    {
+      "name": "Content Writer",
+      "domain": "writing",
+      "phases": ["creation"],
+      "keywords": ["文章", "稿件", "软文", "公众号", "博客", "综述", "报告"],
+      "duty": "文章与内容稿件撰写",
+      "acceptance": "产出内容稿件"
+    },
+    {
+      "name": "Course Designer",
+      "domain": "education",
+      "phases": ["analysis", "creation"],
+      "keywords": ["课程设计", "教学设计", "大纲", "教学目标", "模块", "课程体系", "课程结构", "试讲"],
+      "duty": "课程结构与教学设计，目标拆解与模块编排",
+      "acceptance": "产出课程大纲与教学目标映射"
+    },
+    {
+      "name": "Instructional Curriculum Expert",
+      "domain": "education",
+      "phases": ["analysis", "creation"],
+      "keywords": ["教学教研", "教学法", "课程论", "课标", "教研", "教学模式", "任务驱动", "项目式"],
+      "duty": "教学法与教研设计，教学策略与模式选型",
+      "acceptance": "产出教学法与教研框架"
+    },
+    {
+      "name": "Training Facilitator",
+      "domain": "education",
+      "phases": ["creation"],
+      "keywords": ["培训讲师", "授课", "试讲", "讲师话术", "课堂", "教学", "讲解", "培训"],
+      "duty": "授课与试讲设计，讲师话术与课堂组织",
+      "acceptance": "产出试讲脚本与授课方案"
+    },
+    {
+      "name": "Learner Analytics Specialist",
+      "domain": "education",
+      "phases": ["analysis"],
+      "keywords": ["学情分析", "学员画像", "学习数据", "评估", "学习成效", "完课率", "画像"],
+      "duty": "学情与学习数据分析，学员画像构建",
+      "acceptance": "产出学情报告与改进建议"
+    },
+    {
+      "name": "Vocational Education Specialist",
+      "domain": "education",
+      "phases": ["analysis"],
+      "keywords": ["职业教育", "产教融合", "职教政策", "实训", "校企合作", "双师", "1+x"],
+      "duty": "职教政策与产教融合方案设计",
+      "acceptance": "产出职教落地方案"
+    },
+    {
+      "name": "Corporate Training Designer",
+      "domain": "education",
+      "phases": ["analysis", "creation"],
+      "keywords": ["企业培训", "内训", "培训体系", "课程开发", "培训项目", "讲师体系", "addie"],
+      "duty": "企业培训体系与课程开发",
+      "acceptance": "产出培训项目方案"
+    },
+    {
+      "name": "Assessment Specialist",
+      "domain": "education",
+      "phases": ["analysis", "assurance"],
+      "keywords": ["测评", "考核", "评价", "题库", "标准", "评分", "考试", " rubric"],
+      "duty": "测评与考核标准设计，评分量规制定",
+      "acceptance": "产出测评方案与评分标准"
+    },
+    {
+      "name": "Business Analyst",
+      "domain": "analysis",
+      "phases": ["analysis"],
+      "keywords": ["商业分析", "流程", "需求", "建模", "现状", "诊断", "业务"],
+      "duty": "业务流程分析与需求建模",
+      "acceptance": "产出流程诊断与需求规格"
+    },
+    {
+      "name": "Financial Analyst",
+      "domain": "analysis",
+      "phases": ["analysis"],
+      "keywords": ["财务", "测算", "盈利", "成本", "预算", "roi", "收益", "模型"],
+      "duty": "财务测算与盈利模型",
+      "acceptance": "产出财务测算模型"
+    },
+    {
+      "name": "Operations Analyst",
+      "domain": "analysis",
+      "phases": ["analysis"],
+      "keywords": ["运营分析", "效率", "指标", "诊断", "复盘", "kpi", "数据"],
+      "duty": "运营指标诊断与效率提升",
+      "acceptance": "产出运营诊断与改进项"
+    },
+    {
+      "name": "Strategy Consultant",
+      "domain": "strategy",
+      "phases": ["analysis", "creation"],
+      "keywords": ["战略", "规划", "商业模式", "增长", "蓝图", "路线图", "布局"],
+      "duty": "战略与增长规划",
+      "acceptance": "产出战略规划与增长蓝图"
+    },
+    {
+      "name": "Business Consultant",
+      "domain": "strategy",
+      "phases": ["analysis"],
+      "keywords": ["咨询", "诊断", "方案", "转型", "升级", "顾问"],
+      "duty": "企业诊断与转型方案",
+      "acceptance": "产出转型诊断报告"
+    },
+    {
+      "name": "General Researcher",
+      "domain": "research",
+      "phases": ["discovery", "analysis"],
+      "keywords": ["调研", "资料", "检索", "综述", "搜集", "整理", "背景"],
+      "duty": "通用资料检索与综述整理",
+      "acceptance": "产出资料综述"
+    },
+    {
+      "name": "General Writer",
+      "domain": "writing",
+      "phases": ["creation"],
+      "keywords": ["撰写", "起草", "整理", "汇总", "编写", "成文", "输出"],
+      "duty": "通用内容撰写与整理",
+      "acceptance": "产出成文内容"
+    },
+    {
+      "name": "Quality Reviewer",
+      "domain": "assurance",
+      "phases": ["assurance"],
+      "keywords": ["审查", "质检", "把关", "风险", "门禁", "合规", "验收", "审核", "评审"],
+      "duty": "质量审查、风险把关与门禁校验",
+      "acceptance": "产出明确通过/返工判决与 findings"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+# DSH / Cordis 4 插件挂载声明
+# 该文件由 package.json 的 dsh.bundle.patch 指向，
+# DSH 在加载插件时会读取此文件，将本插件注入运行时。
+- insert:
+  - id: agent-team-router
+    name: agent-team-router
+    config: {}

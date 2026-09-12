@@ -1,0 +1,40 @@
+{
+  "name": "dsh-agent-team-router",
+  "version": "1.0.0",
+  "description": "Agent Team Router —— DSH (DeepSeek Harness) 插件：把任务文本路由为合适的多角色团队编制，并管理团队调度与质量门禁。内置营销/电商/研究/设计/产品/工程/写作/分析/战略/教育等域角色（含课程设计、教学教研、培训讲师等教研域角色）。",
+  "main": "index.js",
+  "type": "commonjs",
+  "files": [
+    "index.js",
+    "router.js",
+    "team.js",
+    "roles.json",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/smoke.js"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "agent",
+    "team",
+    "router",
+    "multi-agent",
+    "orchestration"
+  ],
+  "author": "fjzzwxp",
+  "license": "MIT",
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/cordis": "*"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
