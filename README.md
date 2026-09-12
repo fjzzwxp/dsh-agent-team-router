@@ -1,7 +1,16 @@
-# Agent Team Router（DSH 插件）v2
+# Agent Team Router（DSH 插件）v2.0.1
 
 > 把一段任务文本，自动路由为**合适的多角色团队编制**，并管理团队调度、分层 DAG 依赖、**关键路径/并行度分析**、**多 Agent 协作协议（handoff/inbox）** 与 **5 阶段质量门禁**。
 > 原 `agent-team-router`（WorkBuddy skill）能力的 DSH (DeepSeek Harness) / Cordis 4 插件化重实现，本次 v2 补齐了工程化编排能力。
+
+---
+
+## 版本变更
+
+### v2.0.1（2026-09-13）
+- **路径隔离（修复报告 ②）**：新增 `paths.js`，集中 `resolveWorkspace()` / `resolveArtifactPath()`。`route` / `assemble` / `merge` 与 `team.js` CLI 的所有产物（`roster.json` / `team.json` / `report.md`）一律收敛到显式/绝对工作空间，**不再散落进 dsh 进程 CWD**（避免污染用户项目根目录）。`team_router_route` 新增可选 `workspace` 参数。
+- **测试加固（修复报告 ③）**：新增 `test/plugin.test.js`（15 断言），锁定「隔离 CWD 零散落文件」「路径助手行为」「角色库实际数 = 297 与文档一致」等不变量；`npm test` 现跑 `smoke.js` + `plugin.test.js`（共 45 断言）。
+- **口径一致性**：`team_router_catalog` 描述由「270+ 角色」修正为「297 角色」。
 
 ---
 
@@ -63,7 +72,7 @@ dsh plugin --profile web add dsh-agent-team-router
 ```
 team_router_route(task="分析 TikTok Shop 泰国站美妆个护类目竞争格局，设计 3 个高潜力选品方案并产出落地文档")
 ```
-返回角色清单（含五阶段标注）并写入 `roster.json`。
+返回角色清单（含五阶段标注）并写入工作空间内的 `roster.json`（默认 `./agent-team`，可用 `workspace` 参数指定；相对路径解析为绝对路径，绝不污染进程 CWD）。
 
 **2) 教研任务（自动命中教育域角色）**
 ```

@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { resolveWorkspace, resolveArtifactPath } = require('./paths');
 
 // v2：五阶段流程
 const PHASES = ['discovery', 'analysis', 'design', 'creation', 'assurance'];
@@ -346,7 +347,7 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const cmd = args[0];
   const getOpt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
-  const ws = getOpt('--workspace') || '.';
+  const ws = resolveWorkspace(getOpt('--workspace'));
 
   try {
     const store = new TeamStore(ws);
@@ -383,7 +384,7 @@ if (require.main === module) {
       console.log(JSON.stringify(store.qualityGate(), null, 2));
     } else if (cmd === 'merge') {
       const { report, blockers, ok } = store.merge();
-      const out = getOpt('--out') || 'report.md';
+      const out = resolveArtifactPath(ws, getOpt('--out'), 'report.md');
       fs.writeFileSync(out, report, 'utf8');
       console.log(`✓ 汇总已写入 ${out} ｜ 阻断项 ${blockers.length} ｜ ok=${ok}`);
       process.exitCode = ok ? 0 : 2;

@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const { routeTask, catalog } = require('./router');
 const { TeamStore } = require('./team');
+const { resolveWorkspace, resolveArtifactPath } = require('./paths');
 
 const { defineTool } = require('@deepseek-ai/dsh-tools');
 
@@ -51,7 +52,8 @@ function registerTools(ctx, config) {
           include: { type: 'string', description: '可选，手动指定角色，形如 "Course Designer:creation;Training Facilitator:creation"，分号分隔' },
           exclude: { type: 'string', description: '可选，排除角色名，逗号分隔' },
           topK: { type: 'number', description: '可选，每阶段最多保留候选数，默认 3' },
-          out: { type: 'string', description: '可选，roster 输出路径，默认 roster.json' },
+          workspace: { type: 'string', description: '可选，团队/产物工作空间目录；roster.json 将写入此目录（相对路径解析为绝对路径，避免污染进程 CWD），默认 ./agent-team' },
+          out: { type: 'string', description: '可选，roster 输出路径，默认落到工作空间内的 roster.json（绝对路径则原样尊重）' },
         },
         required: ['task'],
       },
@@ -60,14 +62,16 @@ function registerTools(ctx, config) {
         const include = (args.include || '').split(';').map((s) => s.trim()).filter(Boolean);
         const exclude = (args.exclude || '').split(',').map((s) => s.trim()).filter(Boolean);
         const roster = routeTask(args.task, { include, exclude, rolesPath: resolveRolesPath(config), topK: args.topK });
-        const out = args.out || 'roster.json';
+        const ws = resolveWorkspace(args.workspace || (config && config.defaultWorkspace));
+        fs.mkdirSync(ws, { recursive: true });
+        const out = resolveArtifactPath(ws, args.out, 'roster.json');
         fs.writeFileSync(out, JSON.stringify(roster, null, 2), 'utf8');
         return { markdown: `${summarizeRoster(roster)}\n\n> roster 已写入 \`${out}\``, roster };
       },
     },
     {
       name: 'team_router_catalog',
-      description: '列出内置角色库全量目录（按域分组，共 270+ 角色，含 agency-agents 273 专业角色与精选中文域角色），用于了解可路由角色及 --include 可填的真实角色名。',
+      description: '列出内置角色库全量目录（按域分组，共 297 角色，含 agency-agents 273 专业角色与精选中文域角色），用于了解可路由角色及 --include 可填的真实角色名。',
       parameters: { type: 'object', properties: {}, required: [] },
       output: { schema: { type: 'object' }, render: (o) => o.markdown },
       execute: async () => {
@@ -93,8 +97,11 @@ function registerTools(ctx, config) {
       },
       output: { schema: { type: 'object' }, render: (o) => o.markdown },
       execute: async (args) => {
-        const ws = args.workspace || (config && config.defaultWorkspace) || './.agent-team';
-        const roster = JSON.parse(fs.readFileSync(args.rosterPath, 'utf8'));
+        const ws = resolveWorkspace(args.workspace || (config && config.defaultWorkspace));
+        const rosterPath = args.rosterPath
+          ? (path.isAbsolute(args.rosterPath) ? args.rosterPath : path.resolve(ws, args.rosterPath))
+          : path.join(ws, 'roster.json');
+        const roster = JSON.parse(fs.readFileSync(rosterPath, 'utf8'));
         const store = new TeamStore(ws);
         const team = store.create(roster);
         const lines = team.tasks.map((t) => `- ${t.taskId} [${t.priority}] ${t.phaseLabel} ${t.name} ×${t.count} 依赖[${t.dependsOn.join(',') || '-'}]`);
@@ -288,7 +295,8 @@ function registerTools(ctx, config) {
       execute: async (args) => {
         const store = new TeamStore(args.workspace);
         const { report, blockers, ok } = store.merge();
-        const out = args.out || 'report.md';
+        const ws = resolveWorkspace(args.workspace || (config && config.defaultWorkspace));
+        const out = resolveArtifactPath(ws, args.out, 'report.md');
         fs.writeFileSync(out, report, 'utf8');
         return { markdown: `${report}\n\n> 阻断项 ${blockers.length} ｜ ok=${ok} ｜ 报告已写入 \`${out}\``, blockers, ok };
       },
