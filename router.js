@@ -1,27 +1,30 @@
 'use strict';
 /*
- * router.js — Agent Team Router 路由引擎
+ * router.js — Agent Team Router 路由引擎 v2
  * 职责：把一段任务文本，匹配出合适的多角色团队编制（roster）。
  * 算法：关键词命中 + IDF 加权（抑制“数据/分析”等泛词，突出特异词），
- *       阶段（discovery/analysis/creation/assurance）分配 + 优先级 + 数量推断。
+ *       五阶段（discovery/analysis/design/creation/assurance）分配 + 优先级 + 数量推断。
+ *       每阶段取 Top-K 候选，避免同域大量角色导致编制膨胀。
  * 纯 Node 内置模块，无外部依赖，可被 index.js（DSH 入口）直接 require。
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const PHASES = ['discovery', 'analysis', 'creation', 'assurance'];
-const PHASE_LABEL = { discovery: '调研', analysis: '分析', creation: '产出', assurance: '审查' };
-const PHASE_PRIORITY = { discovery: 'P0', analysis: 'P0', creation: 'P1', assurance: 'P1' };
+// v2：五阶段流程（调研→分析→设计→产出→审查）
+const PHASES = ['discovery', 'analysis', 'design', 'creation', 'assurance'];
+const PHASE_LABEL = { discovery: '调研', analysis: '分析', design: '设计', creation: '产出', assurance: '审查' };
+const PHASE_PRIORITY = { discovery: 'P0', analysis: 'P0', design: 'P0', creation: 'P1', assurance: 'P1' };
 
 const DEFAULT_ROLES_PATH = path.join(__dirname, 'roles.json');
 
 // 任务阶段信号词：用于判断任务当下激活了哪些阶段
 const PHASE_SIGNALS = {
-  discovery: ['调研', '市场', '竞品', '趋势', '盘点', '梳理', '检索', '资料', '现状', '行业', '格局', '对标', '收集', '背景'],
-  analysis: ['分析', '诊断', '评估', '对比', '测算', '建模', '洞察', 'swot', '复盘', 'kpi', '指标', '数据', '拆解'],
-  creation: ['设计', '写', '生成', '方案', '制作', '开发', '产出', '策划', '文案', '脚本', '教案', '大纲', '课程', '搭建', '实现', '创作', '文档'],
-  assurance: ['审查', '质检', '把关', '验收', '评审', '审核', '合规', '测试', '验证'],
+  discovery: ['调研', '市场', '竞品', '趋势', '盘点', '梳理', '检索', '资料', '现状', '行业', '格局', '对标', '收集', '背景', '找', '了解', '摸清'],
+  analysis: ['分析', '诊断', '评估', '对比', '测算', '建模', '洞察', 'swot', '复盘', 'kpi', '指标', '数据', '拆解', '归因'],
+  design: ['设计', '规划', '架构', '方案', '原型', '框架', '蓝图', '大纲', '排期', '建模', '拟定', '策略框架', '路线图', '画'],
+  creation: ['写', '生成', '制作', '开发', '产出', '策划', '文案', '脚本', '教案', '大纲', '课程', '搭建', '实现', '创作', '文档', '代码', '落地'],
+  assurance: ['审查', '质检', '把关', '验收', '评审', '审核', '合规', '测试', '验证', '把关', '校验'],
 };
 
 // 规模信号词：命中后，各阶段主角色数量放大
@@ -60,13 +63,13 @@ function buildIdf(roles) {
 }
 
 function phaseWeights(text) {
-  const w = { discovery: 0, analysis: 0, creation: 0, assurance: 0 };
+  const w = { discovery: 0, analysis: 0, design: 0, creation: 0, assurance: 0 };
   for (const p of PHASES) {
     for (const sig of PHASE_SIGNALS[p]) if (text.includes(sig)) w[p] += 1;
   }
-  const total = w.discovery + w.analysis + w.creation + w.assurance;
+  const total = PHASES.reduce((s, p) => s + w[p], 0);
   if (total === 0) {
-    // 无信号：默认四个阶段都激活（均分权重）
+    // 无信号：默认五个阶段都激活（均分权重）
     for (const p of PHASES) w[p] = 1;
   }
   return w;
@@ -84,7 +87,6 @@ function choosePhase(rolePhases, weights) {
 
 function confidenceOf(matched) {
   if (matched.length >= 2) return 'high';
-  // 命中词较长（特异）也算 high
   const longest = matched.reduce((m, k) => Math.max(m, k.length), 0);
   return longest >= 4 ? 'high' : 'medium';
 }
@@ -92,7 +94,7 @@ function confidenceOf(matched) {
 /**
  * 路由主函数
  * @param {string} task 任务文本
- * @param {object} opts { include:[], exclude:[], rolesPath }
+ * @param {object} opts { include:[], exclude:[], rolesPath, topK }
  * @returns {object} roster { task, generatedAt, roles:[...] }
  */
 function routeTask(task, opts) {
@@ -104,6 +106,7 @@ function routeTask(task, opts) {
   const numMatch = text.match(/(\d+)\s*个/);
   const explicitCount = numMatch ? parseInt(numMatch[1], 10) : 0;
   const hasScale = SCALE_WORDS.some((w) => text.includes(w)) || explicitCount >= 2;
+  const topK = opts.topK && opts.topK > 0 ? opts.topK : 3;
 
   // 1) 候选匹配
   const candidates = [];
@@ -118,8 +121,8 @@ function routeTask(task, opts) {
   const exclude = new Set((opts.exclude || []).map((s) => s.trim()).filter(Boolean));
   const filtered = candidates.filter((c) => !exclude.has(c.role.name));
 
-  // 3) 每个阶段取主角色（用于数量放大），按阶段归集
-  const byPhase = { discovery: [], analysis: [], creation: [], assurance: [] };
+  // 3) 每个阶段归集候选，取 Top-K（按 score 降序）
+  const byPhase = { discovery: [], analysis: [], design: [], creation: [], assurance: [] };
   for (const c of filtered) {
     const ph = choosePhase(c.role.phases, weights);
     byPhase[ph].push({ ...c, phase: ph });
@@ -128,18 +131,18 @@ function routeTask(task, opts) {
   for (const ph of PHASES) {
     if (byPhase[ph].length) {
       byPhase[ph].sort((a, b) => b.score - a.score);
-      topOf[ph] = byPhase[ph][0].role.name;
+      topOf[ph] = byPhase[ph].slice(0, topK).map((c) => c.role.name);
     }
   }
 
-  // 4) 生成角色编制
+  // 4) 生成角色编制（每阶段 Top-K）
   const rolesOut = [];
   for (const ph of PHASES) {
-    for (const c of byPhase[ph]) {
-      const isTop = topOf[ph] === c.role.name;
+    for (const c of byPhase[ph].slice(0, topK)) {
+      const isTop = topOf[ph][0] === c.role.name;
       let count = 1;
-      // 规模信号（多/批量/分别 或 “N个”）下，调研与产出阶段主角色并行放大
-      if (hasScale && isTop && (ph === 'discovery' || ph === 'creation')) {
+      // 规模信号（多/批量/分别 或 “N个”）下，调研/设计/产出阶段主角色并行放大
+      if (hasScale && isTop && (ph === 'discovery' || ph === 'design' || ph === 'creation')) {
         count = Math.max(3, explicitCount || 3);
       }
       rolesOut.push({
@@ -214,21 +217,22 @@ if (require.main === module) {
   if (args.includes('--catalog')) {
     const byDomain = catalog(args.includes('--roles') ? args[args.indexOf('--roles') + 1] : undefined);
     for (const d of Object.keys(byDomain)) {
-      console.log(`\n# 域: ${d}`);
+      console.log(`\n# 域: ${d} (${byDomain[d].length})`);
       for (const r of byDomain[d]) console.log(`  - ${r.name} [${r.phases.join('/')}] : ${r.duty}`);
     }
     process.exit(0);
   }
   const task = args.find((a) => !a.startsWith('--'));
-  if (!task) { console.error('用法: node router.js "<任务文本>" [--include "角色:阶段"] [--exclude "a,b"] [--out roster.json]'); process.exit(1); }
+  if (!task) { console.error('用法: node router.js "<任务文本>" [--include "角色:阶段"] [--exclude "a,b"] [--topk 3] [--out roster.json]'); process.exit(1); }
 
   const getOpt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
   const include = (getOpt('--include') || '').split(';').map((s) => s.trim()).filter(Boolean);
   const exclude = (getOpt('--exclude') || '').split(',').map((s) => s.trim()).filter(Boolean);
   const out = getOpt('--out') || 'roster.json';
   const rolesPath = getOpt('--roles');
+  const topK = parseInt(getOpt('--topk') || '3', 10);
 
-  const roster = routeTask(task, { include, exclude, rolesPath });
+  const roster = routeTask(task, { include, exclude, rolesPath, topK });
   fs.writeFileSync(out, JSON.stringify(roster, null, 2), 'utf8');
   console.log(`✓ 路由完成，命中 ${roster.roles.length} 个角色，已写入 ${out}`);
   for (const r of roster.roles) {
